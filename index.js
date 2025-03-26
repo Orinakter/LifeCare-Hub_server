@@ -23,6 +23,15 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+
+    const database = client.db("LifeCareHub");
+    const doctorCollection = database.collection("doctorCollection");
+
+    app.post ("/doctor",async(req,res)=>{
+      const body = req.body;
+      const result = await doctorCollection.insertOne(body)
+      res.send(result)
+    })
     
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
