@@ -53,11 +53,24 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/appointmentDoctor-post',async(req,res)=>{
+    app.post('/appointmentDoctor-post',async(req,res)=>{
       const body = req.body
       const result = await appointmentDoctorCollection.insertOne(body)
       res.send(result)
     })
+    app.get('/appointmentDoctor-get',async(req,res)=>{
+      const collection = appointmentDoctorCollection.find()
+      const result = await collection.toArray()
+      res.send(result)
+    })
+
+    app.post('/book-appointment',async(req,res)=>{
+      const body = req.body
+      const result=await appointmentDoctorCollection.findOne(body)
+      res.send(result)
+    })
+
+
     
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
