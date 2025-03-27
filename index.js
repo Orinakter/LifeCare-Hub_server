@@ -1,5 +1,6 @@
-require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -10,7 +11,7 @@ app.use(express.json())
 
 
 
-const uri = "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fo90p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fo90p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -26,10 +27,35 @@ async function run() {
 
     const database = client.db("LifeCareHub");
     const doctorCollection = database.collection("doctorCollection");
+    const appointmentDoctorCollection= database.collection("appointmentDoctorCollection");
 
     app.post ("/doctor",async(req,res)=>{
       const body = req.body;
       const result = await doctorCollection.insertOne(body)
+      res.send(result)
+    })
+
+    app.get ("/available-doctor",async(req,res)=>{
+      const availableDoctor = doctorCollection.find();
+      const result = await availableDoctor.toArray();
+      res.send(result)
+    })
+
+    app.get ("/all-doctor",async(req,res)=>{
+      const allDoctor = doctorCollection.find();
+      const result = await allDoctor.toArray();
+      res.send(result)
+    })
+    app.get ("/view-details/:id",async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      const result = await doctorCollection.findOne(filter)
+      res.send(result)
+    })
+
+    app.get('/appointmentDoctor-post',async(req,res)=>{
+      const body = req.body
+      const result = await appointmentDoctorCollection.insertOne(body)
       res.send(result)
     })
     
