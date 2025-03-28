@@ -66,7 +66,19 @@ async function run() {
 
     app.post('/book-appointment',async(req,res)=>{
       const body = req.body
-      const result=await appointmentDoctorCollection.findOne(body)
+      const result=await appointmentDoctorCollection.insertOne(body)
+      res.send(result)
+    })
+
+    app.get('/book-appointment',async(req,res)=>{
+      const collection = appointmentDoctorCollection.find()
+      const result = await collection.toArray()
+      res.send(result)
+    })
+    app.get('/book-appointment/:email',async(req,res)=>{
+      const email = req.params.email
+      const query = {email: email}
+      const result = await appointmentDoctorCollection.find(query).toArray()
       res.send(result)
     })
 
